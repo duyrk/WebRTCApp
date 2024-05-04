@@ -35,7 +35,8 @@
       "@services/*": ["services/*"],
       "@constants/*": ["constants/*"],
       "@global/*": ["global/*"],
-      "@libs/*": ["libs/*"]
+      "@libs/*": ["libs/*"],
+      "@contexts/*": ["contexts/*"]
     },
     "plugins": [{ "name": "next" }],
   },

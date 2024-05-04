@@ -1,4 +1,5 @@
 import { IconAdjustmentsSearch, IconCircleCheck, IconFilterHeart } from '@tabler/icons-react';
+
 import { IStepMyAnimeList } from '@app/(shell)/myanimelist/type';
 
 export const STEPS_MY_ANIME_LIST: Array<IStepMyAnimeList> = [

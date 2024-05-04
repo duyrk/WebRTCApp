@@ -5,6 +5,5 @@ interface IStepMyAnimeList {
   stepLabel: string;
   stepDescription: string;
   isComplete?: boolean;
-  Page?: React.ReactNode;
   Icon?: React.FC<TablerIconsProps>;
 }

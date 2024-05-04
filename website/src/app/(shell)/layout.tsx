@@ -12,7 +12,6 @@ import {
 } from '@mantine/core';
 
 import React from 'react';
-import { usePathname } from 'next/navigation';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconLogout } from '@tabler/icons-react';
 
@@ -21,12 +20,11 @@ import { IUser } from '@global/global';
 import { AppRoute } from '@constants/routes';
 import { useRouter } from '@libs/patch-router';
 import classes from './NavbarNested.module.css';
-import { NavbarLinksGroup, UserButton } from '@app/(shell)/_component';
+import { NavbarLinksGroup, UserButton } from '@components';
 import { EStorageKey, StorageService } from '@services/StorageService';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const routes = useRouter();
-  const path = usePathname();
   const [userData] = useLocalStorage<IUser>({ key: EStorageKey.UserData });
 
   const links = AppRoute.map((item) => <NavbarLinksGroup {...item} key={item.label} />);

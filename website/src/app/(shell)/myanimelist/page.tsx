@@ -5,66 +5,104 @@ import {
   Container,
   Divider,
   Group,
+  ScrollArea,
   Stack,
   Stepper,
   Text,
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useCallback } from 'react';
 import { STEPS_MY_ANIME_LIST } from '@app/(shell)/myanimelist/constant';
 import { IconCheck } from '@tabler/icons-react';
-
 import styles from './styles.module.css';
+import { AdjustInformationStep, ChooseAnimeStep, VerifyStep } from 'components/myanimelist/steps';
+import { MyAnimeStepperProvider, useStepperForm } from '@contexts/MyAnimeListStepContext';
 
 export default function MyAnimeListPage() {
   const { colors, primaryColor, radius, spacing } = useMantineTheme();
-  const [stepperActive, setStepperActive] = useState(0);
-  const nextStep = () => setStepperActive((current) => (current < 3 ? current + 1 : current));
-  const prevStep = () => setStepperActive((current) => (current > 0 ? current - 1 : current));
+  const formStepper = useStepperForm({
+    initialValues: {
+      step: 0,
+    },
+  });
+
+  const nextStep = () =>
+    formStepper.setFieldValue(
+      'step',
+      formStepper.values.step > STEPS_MY_ANIME_LIST.length - 1
+        ? formStepper.values.step
+        : ++formStepper.values.step
+    );
+
+  const prevStep = () =>
+    formStepper.setFieldValue(
+      'step',
+      formStepper.values.step <= 0 ? formStepper.values.step : --formStepper.values.step
+    );
+
+  const RenderStepView = useCallback(() => {
+    switch (formStepper.values.step) {
+      case 0:
+        return <ChooseAnimeStep />;
+      case 1:
+        return <AdjustInformationStep />;
+      case 2:
+        return <VerifyStep />;
+      case 3:
+        return <Text>Complete</Text>;
+    }
+  }, [formStepper.values.step]);
 
   return (
-    <Container fluid py={10}>
-      <Group>
-        <Stack gap={0} style={{ flex: 1 }}>
-          <Title order={2} size={'h1'}>
-            MyAnimeList
-          </Title>
-          <Text c={colors.dark[2]}>Adding anime with MyAnimeList database ✨</Text>{' '}
-        </Stack>
-
-        {/*step button navigate*/}
+    <MyAnimeStepperProvider form={formStepper}>
+      <Container fluid py={10} className={styles.pageContainer}>
         <Group>
-          <Button variant={'outline'} onClick={prevStep} disabled={stepperActive === 0}>
-            Previous
-          </Button>
-          <Divider orientation={'vertical'} />
-          <Button variant={'gradient'} onClick={nextStep}>
-            {stepperActive <= STEPS_MY_ANIME_LIST.length - 1 ? 'Next' : 'Complete'}
-          </Button>
-        </Group>
-      </Group>
+          <Stack gap={0} style={{ flex: 1 }}>
+            <Title order={2} size={'h1'}>
+              MyAnimeList
+            </Title>
+            <Text c={colors.dark[2]}>Adding anime with MyAnimeList database ✨</Text>{' '}
+          </Stack>
 
-      <Stepper
-        active={stepperActive}
-        className={styles.stepperContainer}
-        radius={'sm'}
-        completedIcon={<IconCheck />}
-      >
-        {STEPS_MY_ANIME_LIST.map(({ Page, stepLabel, stepDescription, Icon, isComplete }) =>
-          isComplete ? (
-            <Stepper.Completed>
-              <Title>Complete Add anime flow</Title>
-            </Stepper.Completed>
-          ) : (
-            <Stepper.Step
-              label={stepLabel}
-              description={stepDescription}
-              icon={Icon ? <Icon /> : <IconCheck />}
-            ></Stepper.Step>
-          )
-        )}
-      </Stepper>
-    </Container>
+          {/*step button navigate*/}
+          <Group>
+            <Button variant={'outline'} onClick={prevStep} disabled={formStepper.values.step === 0}>
+              Previous
+            </Button>
+            <Divider orientation={'vertical'} />
+            <Button variant={'gradient'} onClick={nextStep}>
+              {formStepper.values.step <= STEPS_MY_ANIME_LIST.length - 1 ? 'Next' : 'Complete'}
+            </Button>
+          </Group>
+        </Group>
+
+        {/*stepper*/}
+        <Stepper
+          radius={'sm'}
+          completedIcon={<IconCheck />}
+          active={formStepper.values.step}
+          className={styles.stepperContainer}
+        >
+          {STEPS_MY_ANIME_LIST.map(({ stepLabel, stepDescription, Icon, isComplete }, index) =>
+            isComplete ? (
+              <Stepper.Completed>
+                <Title>Complete Add anime flow</Title>
+              </Stepper.Completed>
+            ) : (
+              <Stepper.Step
+                label={stepLabel}
+                key={`step-${index}`}
+                description={stepDescription}
+                icon={Icon ? <Icon /> : <IconCheck />}
+              ></Stepper.Step>
+            )
+          )}
+        </Stepper>
+
+        <RenderStepView />
+        {/*end stepper*/}
+      </Container>
+    </MyAnimeStepperProvider>
   );
 }
