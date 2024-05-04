@@ -1,0 +1,5 @@
+export * from './user.model'
+export * from './news.model'
+export * from './anime.model'
+export * from './review.model'
+export * from './collection.model'

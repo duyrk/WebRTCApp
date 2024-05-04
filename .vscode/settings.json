@@ -1,0 +1,23 @@
+{
+  "cSpell.words": [
+    "alphanum",
+    "animes",
+    "IHTTP",
+    "Jikan",
+    "jkan",
+    "Kurosaw",
+    "kurosawanimebe",
+    "mantine",
+    "prefs",
+    "romanji",
+    "Tabler",
+    "tanstack"
+  ],
+  "cssVariables.lookupFiles": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.less",
+    "node_modules/@mantine/core/styles.css"
+  ]
+}

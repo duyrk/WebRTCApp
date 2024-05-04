@@ -1,0 +1,28 @@
+@layer tailwind {
+    @tailwind base;
+}
+@tailwind components;
+@tailwind utilities;
+/* Define color values */
+:root {
+    --primary-gray: '#ccc';
+}
+/* Mobile */
+.hidden-mobile{
+
+    @media (max-width: 38.625em) {
+         display: none !important;
+    }
+}
+/* Tablet  */
+.hidden-tablet{
+    @media (max-width: 48em) {
+        display: none !important;
+    }
+}
+/* Desktop  */
+.hidden-desktop{
+    @media (min-width: 38.625em) {
+        display: none !important;
+    }
+}
