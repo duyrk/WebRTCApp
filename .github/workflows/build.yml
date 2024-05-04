@@ -1,0 +1,16 @@
+  name: Build WorkFlow
+  on:
+    pull_request_target:
+      branches:
+        - main
+    push:
+      branches:
+        - main
+
+  jobs:
+    logger:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Logger
+          run: | 
+            echo 🐧: build satisfy

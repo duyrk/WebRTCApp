@@ -12,12 +12,11 @@ import {
 import { customLogsColor, logger } from '@src/utils'
 import { DbServices } from './db.service'
 import bodyParser from 'body-parser'
-import { Server as SocketServer} from 'socket.io'
-import { createServer } from 'http'
 
 export class ExpressApp {
   static app = express()
   static port = config.port
+
   static async start() {
     try {
       this.useMiddlewares([
@@ -33,20 +32,7 @@ export class ExpressApp {
         pageNotFoundError,
         errorHandler,
       ])
-      const server = createServer(this.app)
-      const io = new SocketServer(server)
-
-      io.on("connection", (socket)=>{
-        console.log('user is connected')
-      })
-
-      // this.app.listen(this.port, () => {
-      //   logger.info(
-      //     `[${process.pid}] 🚩 ${customLogsColor.pink}Server start at port ${this.port}`,
-      //   )
-      // })
-
-      server.listen(this.port, () => {
+      this.app.listen(this.port, () => {
         logger.info(
           `[${process.pid}] 🚩 ${customLogsColor.pink}Server start at port ${this.port}`,
         )
