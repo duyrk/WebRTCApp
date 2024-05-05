@@ -1,7 +1,13 @@
-"use client"
-import React from 'react'
+'use client';
+import { Welcome } from '@app/components/Welcome/Welcome';
+import { ColorSchemeToggle } from '@app/components/ColorSchemeToggle/ColorSchemeToggle';
+import React from 'react';
 
-const RootPage: React.FC = () =>{
-    return <>hey</>
+export default function RootPage() {
+  return (
+    <>
+      <Welcome />
+      <ColorSchemeToggle />
+    </>
+  );
 }
-export default RootPage

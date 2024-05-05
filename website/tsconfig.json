@@ -34,9 +34,7 @@
       "@states/*": ["states/*"],
       "@services/*": ["services/*"],
       "@constants/*": ["constants/*"],
-      "@global/*": ["global/*"],
-      "@libs/*": ["libs/*"],
-      "@contexts/*": ["contexts/*"]
+      "@global/*": ["global/*"]
     },
     "plugins": [{ "name": "next" }],
   },

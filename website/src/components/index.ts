@@ -1,5 +1,2 @@
-'use client';
-
-export * from './dashboard';
-export * from './myanimelist';
-export { default as RootProvider } from './RootProvider';
+import RootProvider from '@components/RootProvider';
+export { RootProvider };

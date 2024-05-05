@@ -1,11 +1,9 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { RootProvider } from '@components';
-import { ColorSchemeScript } from '@mantine/core';
-
-import '@global/global.css';
 import '@mantine/core/styles.css';
-import '@mantine/nprogress/styles.css';
+import { ColorSchemeScript } from '@mantine/core';
+import { RootProvider } from '@components';
+import '@global/global.css';
 
 export const metadata: Metadata = {
   title: 'Kurosaw Anime',

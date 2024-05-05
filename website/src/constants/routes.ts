@@ -1,19 +1,10 @@
-import {IconBook, IconBrandYoutubeKids, IconGauge} from '@tabler/icons-react';
-
-export const AppRoute: Array<IRoute> = [
-  {
-    label: 'Dashboard',
-    icon: IconGauge,
-    link: '/dashboard',
+const ROUTE = {
+  BASE: '/',
+  DASHBOARD: '/dashboard',
+  AUTH: {
+    LOGIN: '/login',
+    REGISTER: '/register',
+    FORGOT_PASSWORD: '/forgot-password',
   },
-  {
-    label: 'Anime',
-    icon: IconBook,
-    links: [{ label: 'Add Anime', link: '/anime/add' }],
-  },
-  {
-    label: 'My Anime List',
-    icon: IconBrandYoutubeKids,
-    link: '/myanimelist'
-  },
-];
+};
+export default ROUTE;

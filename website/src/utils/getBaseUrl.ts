@@ -1,15 +1,17 @@
-'use client';
+/* eslint-disable no-process-env */
 
 export function getBaseUrl() {
   // Deployment URL when deployed on Vercel
-  if (process.env.NEXT_PUBLIC_VERCEL_URL) return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+
   // Assume localhost
   return 'http://localhost:3000';
 }
-
 export function getBaseUrlApi() {
   // Deployment URL when deployed on Vercel
-  if (process.env.NEXT_PUBLIC_BASE_API_URL) return process.env.NEXT_PUBLIC_BASE_API_URL;
+  if (process.env.HOST_URL) return `https://${process.env.HOST_URL}/api`;
+
   // Assume localhost
-  return 'http://localhost:3000/api/';
+  // return 'https://pokeapi.co/api/v2/';
+  return 'http://localhost:3000/api';
 }

@@ -1,5 +1,3 @@
-'use client';
-
 import { WretchInstance } from '@utils';
 
 export interface PokemonType {
