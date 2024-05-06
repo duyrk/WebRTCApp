@@ -1,10 +1,5 @@
 const ROUTE = {
   BASE: '/',
-  DASHBOARD: '/dashboard',
-  AUTH: {
-    LOGIN: '/login',
-    REGISTER: '/register',
-    FORGOT_PASSWORD: '/forgot-password',
-  },
+  HOME: '/home'
 };
 export default ROUTE;

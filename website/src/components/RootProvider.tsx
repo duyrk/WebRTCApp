@@ -7,6 +7,8 @@ import { MantineProvider } from '@mantine/core';
 import { Provider as JotaiProvider } from 'jotai';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RoomProvider } from '@context/RoomContext';
+
 type Props = {
   children: React.ReactNode;
 };
@@ -16,7 +18,7 @@ const RootProvider: React.FC<Props> = ({ children }) => {
     <MantineProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <JotaiProvider>
-          {children}
+          <RoomProvider>{children}</RoomProvider>
           <DevTools />
           <ReactQueryDevtools />
         </JotaiProvider>

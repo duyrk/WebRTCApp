@@ -11,9 +11,7 @@ export const CookieService = {
     document.cookie = `${key}=${value}; path=/`;
   },
   remove(key: string) {
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() - 1);
-    const formattedExpirationDate = expirationDate.toUTCString();
-    document.cookie = `${key}=; expires=${formattedExpirationDate}; path=/`;
+    document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/`;
   },
 } as const;
+
