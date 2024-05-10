@@ -1,21 +1,39 @@
-"use client"
-import { Box, Button, Stack, Text } from '@mantine/core';
-import { RoomContext } from '@context/RoomContext';
+'use client';
+import { Box, Button, Input, Stack, Text } from '@mantine/core';
+import { v4 as uuidV4 } from 'uuid';
 import React from 'react';
-import { useRouter } from '@libs/patch-router';
+import { useRouter } from 'next/navigation';
 
 export default function RootPage() {
-  const { ws } = React.useContext(RoomContext);
-const router = useRouter()
-  const createRoom = () => {
-    ws.emit('create-room');
-    // router.push("/room/heyyyyy")
+  const router = useRouter();
+  const [roomId, setRoomId] = React.useState('');
+  const createAndJoin = () => {
+    const roomId = uuidV4();
+    router.push(`/room/${roomId}`);
+  };
+  const joinRoom = () => {
+    if (roomId) {
+      router.push(`/room/${roomId}`);
+    } else {
+      alert("Please enter valid room id")
+    }
   };
   return (
-    <Box>
+    <Box className="border-2">
       <Stack align="center">
-        <Text>Easy calling app</Text>
-        <Button onClick={createRoom}>Start a new meeting</Button>
+        <Text className="text-3xl font-extrabold">Easy calling app</Text>
+        <Input
+          placeholder="Enter room id to join"
+          value={roomId}
+          onChange={(event) => {
+            setRoomId(event.target.value);
+          }}
+        />
+        <Button onClick={joinRoom}>Join a room</Button>
+      </Stack>
+      <Stack align="center" mt={20}>
+        <Text>--------------- OR ---------------</Text>
+        <Button onClick={createAndJoin}>Create a new room</Button>
       </Stack>
     </Box>
   );
