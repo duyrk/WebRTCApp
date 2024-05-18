@@ -42,11 +42,11 @@ export class ExpressApp {
         }
       });
       io.on("connection", (socket) => {
-        console.log("user is connected");
+        console.log("server is connected");
         roomHandler(socket)
 
         socket.on("disconnect", () => {
-          console.log("user is diconnected");
+          console.log("server is disconnected");
         });
       });
       this.server.listen(this.port, () => {

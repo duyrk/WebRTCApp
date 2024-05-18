@@ -14,33 +14,48 @@ export const roomHandler = (socket: Socket) => {
     socket.to(roomId).emit("user-disconnected", peerId);
   };
   const joinRoom = ({ roomId, peerId }: IRoomParams) => {
-
-    if (rooms[roomId]) {
-      console.log("user joined the room", roomId + " " + peerId);
-      rooms[roomId].push(peerId);
-      socket.join(roomId);
-      socket.emit("joined", peerId);
-      socket.emit("get-users", {
-        roomId,
-        participants: rooms[roomId],
-      });
-    
-    }
-
-    socket.on("disconnect", () => {
-      console.log("user left the room", peerId);
-      leaveRoom({ roomId, peerId });
-    });
+    //   if (rooms[roomId]) {
+    //     console.log("user joined the room", roomId + " " + peerId);
+    //     rooms[roomId].push(peerId);
+    //     socket.join(roomId);
+    //     socket.emit("joined", peerId);
+    //     socket.emit("get-users", {
+    //       roomId,
+    //       participants: rooms[roomId],
+    //     });
+    //   }
+    //   socket.on("disconnect", () => {
+    //     console.log("user left the room", peerId);
+    //     leaveRoom({ roomId, peerId });
+    //   });
+    // };
+    // const createRoom = () => {
+    //   const roomId = uuid();
+    //   rooms[roomId] = [];
+    //   socket.join(roomId);
+    //   socket.emit("room-created", {
+    //     roomId,
+    //   });
+    //   console.log("user created a room");
   };
-  const createRoom = () => {
-    const roomId = uuid();
-    rooms[roomId] = [];
+  // socket.on("join-room", joinRoom);
+  // socket.on("create-room", createRoom);
+  socket.on("join-room", (roomId, userId) => {
+    console.log(`a new user ${userId} joined room ${roomId}`);
     socket.join(roomId);
-    socket.emit("room-created", {
-      roomId,
-    });
-    console.log("user created a room");
-  };
-  socket.on("join-room", joinRoom);
-  socket.on("create-room", createRoom);
+    socket.broadcast.to(roomId).emit("user-connected", userId);
+    //emit message to every users in that room id except me
+  });
+  socket.on("user-toggle-audio", (userId, roomId) => {
+    socket.join(roomId);
+    socket.broadcast.to(roomId).emit("user-toggle-audio", userId);
+  });
+  socket.on("user-toggle-video", (userId, roomId) => {
+    socket.join(roomId);
+    socket.broadcast.to(roomId).emit("user-toggle-video", userId);
+  });
+  socket.on("user-leave", (userId, roomId)=>{
+    socket.join(roomId)
+    socket.broadcast.to(roomId).emit("user-leave", userId)
+  })
 };

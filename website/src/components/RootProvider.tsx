@@ -15,7 +15,7 @@ type Props = {
 const queryClient = new QueryClient();
 const RootProvider: React.FC<Props> = ({ children }) => {
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider theme={theme} defaultColorScheme='dark'>
       <QueryClientProvider client={queryClient}>
         <JotaiProvider>
           <RoomProvider>{children}</RoomProvider>
