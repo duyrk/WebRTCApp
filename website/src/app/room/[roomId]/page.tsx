@@ -1,12 +1,15 @@
 'use client';
-import VideoPlayer from '@components/VideoPlayer';
+
 import { useSocket } from '@context/RoomContext';
 import useMediaStream from '@hooks/useMediaStream';
 import usePeer from '@hooks/usePeer';
-import usePlayer from '@hooks/userPlayer';
+import usePlayer from '@hooks/usePlayer';
 import { MediaConnection } from 'peerjs';
 import React from 'react';
-import { Stream } from 'stream';
+import styles from './_styles/room.module.css';
+import VideoPlayer from '@components/VideoPlayer';
+import Bottom from '@components/Bottom';
+import { cloneDeep } from 'lodash';
 export interface RoomPageProps {
   params: { roomId: string };
 }
@@ -15,7 +18,17 @@ const RoomPage: React.FC<RoomPageProps> = (props) => {
   const socket = useSocket();
   const { peer, myId } = usePeer();
   const { stream } = useMediaStream();
-  const { players, setPlayers } = usePlayer();
+  const [users, setUsers] = React.useState<Record<string, MediaConnection>>();
+
+  const {
+    players,
+    setPlayers,
+    playerHighlighted,
+    nonHighlightedPlayers,
+    toggleAudio,
+    toggleVideo,
+    leaveRoom,
+  } = usePlayer(myId, params.roomId, peer);
 
   const handleUSerConnected = (userId: string) => {
     console.log(`user connected in room with user id ${userId}`);
@@ -30,8 +43,47 @@ const RoomPage: React.FC<RoomPageProps> = (props) => {
           playing: true,
         },
       }));
+
+      setUsers((prev) => ({
+        ...prev,
+        [userId]: call,
+      }));
     });
   };
+
+  const handleToggleAudio = (userId: string) => {
+    console.log(`user with id ${userId} toggled audio`);
+    setPlayers((prev) => {
+      const copy = cloneDeep(prev);
+      if (copy) {
+        copy[userId].muted = !copy[userId].muted;
+      }
+      return { ...copy };
+    });
+  };
+
+  const handleToggleVideo = (userId: string) => {
+    console.log(`user with id ${userId} toggled video`);
+    setPlayers((prev) => {
+      const copy = cloneDeep(prev);
+      if (copy) {
+        copy[userId].playing = !copy[userId].playing;
+      }
+      return { ...copy };
+    });
+  };
+
+  const handleUserLeave = (userId: string) => {
+    //close the call connection
+    users![userId].close();
+    setPlayers((prev) => {
+      const copy = cloneDeep(prev);
+      if (copy) delete copy[userId];
+
+      return { ...copy };
+    });
+  };
+
   React.useEffect(() => {
     if (!socket.ws || !stream || !peer) return;
     socket.ws?.on('user-connected', handleUSerConnected);
@@ -55,13 +107,17 @@ const RoomPage: React.FC<RoomPageProps> = (props) => {
             playing: true,
           },
         }));
+
+        setUsers((prev) => ({
+          ...prev,
+          [callerId]: call,
+        }));
       });
     });
   }, [peer, stream]);
 
   React.useEffect(() => {
-    if (!stream) return;
-
+    if (!stream || !myId) return;
     console.log(`setting my stream ${myId}`);
     setPlayers((prev) => ({
       ...prev,
@@ -71,19 +127,57 @@ const RoomPage: React.FC<RoomPageProps> = (props) => {
         playing: true,
       },
     }));
-  }, [stream]);
+  }, [stream, myId, setPlayers]);
+
+  //catch audio event from socket
+  React.useEffect(() => {
+    if (!socket.ws) return;
+    socket.ws?.on('user-toggle-audio', handleToggleAudio);
+    return () => {
+      socket.ws?.off('user-toggle-audio', handleToggleAudio);
+    };
+  }, []);
+
+  //catch video event from socket
+  React.useEffect(() => {
+    if (!socket.ws) return;
+    socket.ws?.on('user-toggle-video', handleToggleVideo);
+    return () => {
+      socket.ws?.off('user-toggle-video', handleToggleVideo);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (!socket) return;
+    socket.ws?.on('user-leave', handleUserLeave);
+    return () => {
+      socket.ws?.off('user-leave', handleUserLeave);
+    };
+  }, []);
+
   return (
     <>
-      Room id: {params.roomId}
-      <div>
-        {players ? (
-          Object.keys(players).map((playerId: string) => {
-            return <VideoPlayer key={playerId} {...players[playerId]} />;
+      <div className={styles.activePlayerContainer}>
+        {playerHighlighted && <VideoPlayer {...playerHighlighted} isActive={true} />}
+      </div>
+      <div className={styles.inActivePlayerContainer}>
+        {nonHighlightedPlayers ? (
+          Object.keys(nonHighlightedPlayers).map((playerId: string) => {
+            return (
+              <VideoPlayer key={playerId} {...nonHighlightedPlayers[playerId]} isActive={false} />
+            );
           })
         ) : (
           <></>
         )}
       </div>
+      <Bottom
+        muted={playerHighlighted?.muted ?? false}
+        playing={playerHighlighted?.playing ?? true}
+        toggleAudio={toggleAudio}
+        toggleVideo={toggleVideo}
+        leaveRoom={leaveRoom}
+      />
     </>
   );
 };

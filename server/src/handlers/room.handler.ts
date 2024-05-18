@@ -42,8 +42,20 @@ export const roomHandler = (socket: Socket) => {
   // socket.on("create-room", createRoom);
   socket.on("join-room", (roomId, userId) => {
     console.log(`a new user ${userId} joined room ${roomId}`);
-    socket.join(roomId)
-    socket.broadcast.to(roomId).emit("user-connected", userId)
+    socket.join(roomId);
+    socket.broadcast.to(roomId).emit("user-connected", userId);
     //emit message to every users in that room id except me
   });
+  socket.on("user-toggle-audio", (userId, roomId) => {
+    socket.join(roomId);
+    socket.broadcast.to(roomId).emit("user-toggle-audio", userId);
+  });
+  socket.on("user-toggle-video", (userId, roomId) => {
+    socket.join(roomId);
+    socket.broadcast.to(roomId).emit("user-toggle-video", userId);
+  });
+  socket.on("user-leave", (userId, roomId)=>{
+    socket.join(roomId)
+    socket.broadcast.to(roomId).emit("user-leave", userId)
+  })
 };
